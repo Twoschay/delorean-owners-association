@@ -1,3 +1,15 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "DeLorean Owners Association — The World's Premier DeLorean Community",
+  description: "Join 5,000+ DeLorean DMC-12 owners and enthusiasts worldwide. Access our global member map, forums, digital magazine, classifieds, and more.",
+  openGraph: {
+    title: "DeLorean Owners Association",
+    description: "The world's premier DeLorean community since 1983",
+    type: "website",
+  },
+};
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -103,7 +115,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="container relative z-10">
+        <div className="container relative z-10 animate-fade-in-up">
           <div className="max-w-2xl">
             <div className="flex items-center gap-2 mb-6">
               <Badge className="bg-amber/10 text-amber border-amber/30">
@@ -342,7 +354,7 @@ export default function HomePage() {
       {/* ===== MEMBER MAP PREVIEW ===== */}
       <section className="py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-obsidian via-charcoal/30 to-obsidian" />
-        <div className="container relative z-10">
+        <div className="container relative z-10 animate-fade-in-up">
           <div className="text-center mb-8">
             <p className="text-amber text-sm uppercase tracking-widest mb-3 font-medium">
               Global Community
