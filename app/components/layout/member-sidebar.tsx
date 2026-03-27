@@ -31,7 +31,7 @@ const SIDEBAR_LINKS = [
   { href: "/members", label: "Members", icon: Users },
   { href: "/garage", label: "Garage", icon: Car },
   { href: "/resources", label: "Resources", icon: Wrench },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/account", label: "Account", icon: Settings },
 ];
 
 export function MemberSidebar() {
