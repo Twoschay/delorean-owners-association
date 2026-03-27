@@ -5,151 +5,175 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, BookOpen, Star, FileText, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, BookOpen, Download, Calendar, FileText, ChevronLeft, ChevronRight } from "lucide-react";
 import { getMagazineById, MOCK_MAGAZINE_ISSUES } from "@/lib/mock-data/magazine";
+
+const COVER_GRADIENTS: Record<string, string> = {
+  "mag-ev-gradient": "from-blue-900 via-blue-700 to-amber-500",
+  "mag-ladies-gradient": "from-purple-900 via-rose-700 to-amber-400",
+  "mag-40th-gradient": "from-amber-800 via-amber-600 to-yellow-400",
+  "mag-restoration-gradient": "from-slate-700 via-slate-500 to-amber-500",
+  "mag-barnfind-gradient": "from-green-900 via-green-700 to-amber-500",
+  "mag-expo-gradient": "from-red-900 via-red-700 to-amber-500",
+  "mag-performance-gradient": "from-red-900 via-orange-700 to-yellow-400",
+  "mag-gold-gradient": "from-yellow-800 via-yellow-600 to-amber-300",
+  "mag-daily-gradient": "from-slate-800 via-slate-600 to-amber-500",
+  "mag-international-gradient": "from-blue-900 via-indigo-700 to-amber-400",
+  "mag-stainless-gradient": "from-gray-700 via-gray-500 to-amber-400",
+  "mag-bttf-gradient": "from-orange-900 via-orange-700 to-amber-400",
+  "mag-buying-gradient": "from-green-900 via-teal-700 to-amber-400",
+  "mag-prv-gradient": "from-slate-800 via-slate-600 to-orange-500",
+  "mag-expo22-gradient": "from-red-800 via-red-600 to-amber-400",
+  "mag-digital-gradient": "from-cyan-900 via-cyan-700 to-amber-400",
+  "mag-covid-gradient": "from-gray-900 via-gray-700 to-amber-400",
+  "mag-factory-gradient": "from-slate-900 via-slate-700 to-amber-300",
+  "mag-debate-gradient": "from-violet-900 via-violet-700 to-amber-400",
+  "mag-35th-gradient": "from-amber-900 via-amber-700 to-yellow-300",
+};
 
 interface PageProps {
   params: Promise<{ issueId: string }>;
 }
 
-const COVER_THEMES = [
-  "from-amber/30 via-amber/10 to-obsidian",
-  "from-zinc-600/40 via-zinc-800/20 to-obsidian",
-  "from-blue-800/40 via-blue-900/20 to-obsidian",
-  "from-stone-600/30 via-stone-800/20 to-obsidian",
-];
-
-export default function MagazineIssuePage({ params }: PageProps) {
+export default function IssuePage({ params }: PageProps) {
   const { issueId } = use(params);
   const issue = getMagazineById(issueId);
-
   if (!issue) notFound();
 
-  const sortedIssues = [...MOCK_MAGAZINE_ISSUES].sort(
+  const sorted = [...MOCK_MAGAZINE_ISSUES].sort(
     (a, b) => new Date(b.published_date).getTime() - new Date(a.published_date).getTime()
   );
-  const currentIndex = sortedIssues.findIndex((i) => i.id === issueId);
-  const prevIssue = currentIndex < sortedIssues.length - 1 ? sortedIssues[currentIndex + 1] : null;
-  const nextIssue = currentIndex > 0 ? sortedIssues[currentIndex - 1] : null;
-  const themeIdx = currentIndex % COVER_THEMES.length;
+  const idx = sorted.findIndex(i => i.id === issueId);
+  const prev = idx > 0 ? sorted[idx - 1] : null;
+  const next = idx < sorted.length - 1 ? sorted[idx + 1] : null;
+  const gradient = COVER_GRADIENTS[issue.cover_placeholder] || "from-slate-800 via-slate-600 to-amber-500";
 
   return (
-    <div className="p-4 sm:p-6 max-w-5xl">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground">
-        <Link href="/magazine/archive" className="hover:text-steel transition-colors flex items-center gap-1">
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Magazine Archive
-        </Link>
+    <div className="p-6 max-w-6xl mx-auto">
+      <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
+        <Link href="/dashboard" className="hover:text-amber-400 transition-colors">Dashboard</Link>
         <span>/</span>
-        <span className="text-white">Vol. {issue.volume}, Issue {issue.issue}</span>
+        <Link href="/magazine/archive" className="hover:text-amber-400 transition-colors">Archive</Link>
+        <span>/</span>
+        <span className="text-gray-300">Vol. {issue.volume} · Issue {issue.issue}</span>
       </div>
 
-      {/* Issue header */}
-      <div className="flex flex-col lg:flex-row gap-8 mb-8">
-        {/* Cover */}
-        <div className="flex-shrink-0">
-          <div className={`w-48 h-64 rounded-xl bg-gradient-to-br ${COVER_THEMES[themeIdx]} border border-amber/30 flex flex-col items-center justify-center p-5 text-center shadow-amber-glow`}>
-            <div className="font-display text-[10px] text-amber tracking-widest mb-1">DELOREAN WORLD</div>
-            <div className="font-display text-3xl text-white mb-0.5">VOL. {issue.volume}</div>
-            <div className="font-display text-xs text-steel/60 mb-1.5">ISSUE {issue.issue}</div>
-            <div className="w-3/4 h-px bg-amber/40 mb-2" />
-            <div className="text-[8px] text-steel/70 leading-tight font-sans line-clamp-4">{issue.title}</div>
-          </div>
-        </div>
-
-        {/* Info */}
-        <div className="flex-1">
-          <div className="flex flex-wrap items-center gap-2 mb-2">
-            <Badge variant="outline" className="border-amber/30 text-amber text-xs">Vol. {issue.volume}, Issue {issue.issue}</Badge>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-1">
+          <div className={`relative bg-gradient-to-br ${gradient} h-80 rounded-xl overflow-hidden flex flex-col items-center justify-between p-4 mb-4`}>
+            <div className="text-center w-full">
+              <div className="text-amber-300 text-sm font-bold tracking-widest uppercase">DeLorean World</div>
+              <div className="h-px bg-amber-400/50 mt-2" />
+            </div>
+            <div className="text-center px-2">
+              <div className="text-white font-bold text-xl leading-tight">{issue.title}</div>
+            </div>
+            <div className="text-center w-full">
+              <div className="h-px bg-amber-400/50 mb-2" />
+              <div className="text-amber-300 text-sm tracking-wide">Vol. {issue.volume} · Issue {issue.issue}</div>
+            </div>
             {issue.is_digital_only && (
-              <Badge variant="outline" className="border-border text-muted-foreground text-xs">Digital Only</Badge>
+              <div className="absolute top-3 right-3">
+                <Badge className="bg-amber-500 text-black text-xs">Digital Only</Badge>
+              </div>
             )}
           </div>
-          <h1 className="font-display text-3xl sm:text-4xl text-white tracking-wide mb-3">
-            {issue.title}
-          </h1>
-          <p className="text-muted-foreground leading-relaxed mb-4">{issue.cover_story}</p>
-          <div className="flex items-center gap-4 text-sm text-steel/70 mb-4">
-            <span className="flex items-center gap-1">
-              <BookOpen className="h-4 w-4 text-amber" />
-              {issue.page_count} pages
-            </span>
-            <span>
-              {new Date(issue.published_date).toLocaleDateString("en-US", {
-                month: "long", year: "numeric"
-              })}
-            </span>
+
+          <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 mb-4 space-y-3">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-400 flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> Published</span>
+              <span className="text-gray-200">{new Date(issue.published_date).toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-400 flex items-center gap-1"><FileText className="w-3.5 h-3.5" /> Pages</span>
+              <span className="text-gray-200">{issue.page_count}</span>
+            </div>
           </div>
-          <div className="mb-5">
-            <p className="text-xs text-steel uppercase tracking-wider mb-2">In This Issue</p>
-            <ul className="space-y-1.5">
-              {issue.highlights.map((h) => (
-                <li key={h} className="flex items-start gap-2 text-sm text-steel/80">
-                  <Star className="h-3.5 w-3.5 text-amber flex-shrink-0 mt-0.5" />
-                  {h}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <Button className="bg-amber hover:bg-amber-glow text-obsidian font-bold">
-            <FileText className="h-4 w-4 mr-2" />
-            Open Digital Magazine
+
+          <Button className="w-full bg-amber-500 hover:bg-amber-400 text-black font-semibold mb-3">
+            <BookOpen className="w-4 h-4 mr-2" />Open PDF
+          </Button>
+          <Button variant="outline" className="w-full border-gray-700 text-gray-300 hover:text-white hover:border-gray-500">
+            <Download className="w-4 h-4 mr-2" />Download Issue
           </Button>
         </div>
-      </div>
 
-      {/* PDF Viewer Placeholder */}
-      <Card className="bg-card border-border mb-8">
-        <CardContent className="p-0">
-          <div className="h-96 flex items-center justify-center bg-gradient-to-br from-charcoal to-obsidian rounded-lg">
-            <div className="text-center max-w-sm px-6">
-              <div className="w-16 h-20 bg-amber/10 border-2 border-amber/30 rounded mx-auto mb-4 flex items-center justify-center">
-                <FileText className="h-8 w-8 text-amber/60" />
-              </div>
-              <h3 className="font-display text-xl text-white tracking-wide mb-2">DIGITAL MAGAZINE VIEWER</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                In production, the full {issue.page_count}-page issue would display here as a beautiful
-                interactive flip-book PDF viewer. Members can read, search, bookmark, and annotate issues.
-              </p>
-              <div className="mt-4 p-3 bg-amber/5 border border-amber/20 rounded text-xs text-amber/80">
-                Demo mode — PDF viewer available in production
+        <div className="lg:col-span-2 space-y-6">
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-3">{issue.title}</h1>
+            <div className="flex flex-wrap gap-2 mb-4">
+              <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30">Volume {issue.volume}</Badge>
+              <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30">Issue {issue.issue}</Badge>
+            </div>
+          </div>
+
+          <div>
+            <h2 className="text-lg font-semibold text-amber-400 mb-3">Cover Story</h2>
+            <p className="text-gray-300 leading-relaxed">{issue.cover_story}</p>
+          </div>
+
+          <div className="h-px bg-gray-800" />
+
+          <div>
+            <h2 className="text-lg font-semibold text-amber-400 mb-3">In This Issue</h2>
+            <div className="space-y-2">
+              {issue.highlights.map((highlight, i) => (
+                <div key={i} className="flex items-start gap-3 p-3 bg-gray-900 border border-gray-800 rounded-lg">
+                  <div className="w-6 h-6 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-amber-400 text-xs font-bold">{i + 1}</span>
+                  </div>
+                  <span className="text-gray-300 text-sm">{highlight}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="h-px bg-gray-800" />
+
+          <div>
+            <h2 className="text-lg font-semibold text-amber-400 mb-3">PDF Viewer</h2>
+            <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
+              <div className="flex">
+                <div className={`flex-1 bg-gradient-to-br ${gradient} h-64 flex flex-col items-center justify-center p-4`}>
+                  <div className="text-amber-300 text-xs font-bold tracking-widest uppercase mb-1">DeLorean World</div>
+                  <div className="h-px bg-amber-400/50 w-full mb-4" />
+                  <div className="text-white font-bold text-sm text-center leading-tight">{issue.title}</div>
+                  <div className="h-px bg-amber-400/50 w-full mt-4 mb-1" />
+                  <div className="text-amber-300 text-xs">Vol. {issue.volume} · Issue {issue.issue}</div>
+                </div>
+                <div className="flex-1 bg-gray-800 h-64 flex flex-col items-center justify-center p-6 text-center">
+                  <BookOpen className="w-10 h-10 text-gray-600 mb-3" />
+                  <p className="text-gray-400 text-sm font-medium">PDF Viewer</p>
+                  <p className="text-gray-600 text-xs mt-2 leading-relaxed">In production, the full digital magazine would display here.</p>
+                  <Button size="sm" className="mt-4 bg-amber-500 hover:bg-amber-400 text-black">Open Full PDF</Button>
+                </div>
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Navigation */}
-      <div className="flex items-center justify-between">
-        {prevIssue ? (
-          <Link href={`/magazine/${prevIssue.id}`}>
-            <Button variant="outline" className="border-border text-steel hover:text-white gap-2">
-              <ChevronLeft className="h-4 w-4" />
-              <span className="hidden sm:block">Vol. {prevIssue.volume}, No. {prevIssue.issue}</span>
-              <span className="sm:hidden">Previous</span>
-            </Button>
-          </Link>
-        ) : (
-          <div />
-        )}
-        <Link href="/magazine/archive">
-          <Button variant="ghost" className="text-muted-foreground hover:text-steel">
-            All Issues
-          </Button>
+          <div className="flex items-center justify-between pt-2">
+            {prev ? (
+              <Link href={`/magazine/${prev.id}`}>
+                <Button variant="outline" className="border-gray-700 text-gray-300 hover:text-white hover:border-gray-500">
+                  <ChevronLeft className="w-4 h-4 mr-1" />Newer Issue
+                </Button>
+              </Link>
+            ) : <div />}
+            {next ? (
+              <Link href={`/magazine/${next.id}`}>
+                <Button variant="outline" className="border-gray-700 text-gray-300 hover:text-white hover:border-gray-500">
+                  Older Issue<ChevronRight className="w-4 h-4 ml-1" />
+                </Button>
+              </Link>
+            ) : <div />}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-8 pt-6 border-t border-gray-800">
+        <Link href="/magazine/archive" className="inline-flex items-center text-sm text-gray-400 hover:text-amber-400 transition-colors">
+          <ArrowLeft className="w-4 h-4 mr-1" />Back to Archive
         </Link>
-        {nextIssue ? (
-          <Link href={`/magazine/${nextIssue.id}`}>
-            <Button variant="outline" className="border-border text-steel hover:text-white gap-2">
-              <span className="hidden sm:block">Vol. {nextIssue.volume}, No. {nextIssue.issue}</span>
-              <span className="sm:hidden">Next</span>
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </Link>
-        ) : (
-          <div />
-        )}
       </div>
     </div>
   );

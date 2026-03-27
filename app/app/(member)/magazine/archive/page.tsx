@@ -63,7 +63,7 @@ export default function MagazineArchivePage() {
   const latestIssue = MOCK_MAGAZINE_ISSUES[0];
 
   const years = useMemo(() => {
-    const ys = [...new Set(MOCK_MAGAZINE_ISSUES.map(m => new Date(m.published_date).getFullYear()))].sort((a, b) => b - a);
+    const ys = Array.from(new Set(MOCK_MAGAZINE_ISSUES.map(m => new Date(m.published_date).getFullYear()))).sort((a, b) => b - a);
     return ys;
   }, []);
 
