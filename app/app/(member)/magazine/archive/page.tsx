@@ -41,15 +41,11 @@ function MagazineCover({ issue, large = false }: { issue: typeof MOCK_MAGAZINE_I
         <div className="h-px bg-amber-400/50 mt-1" />
       </div>
       <div className="text-center px-2">
-        <div className={`text-white font-bold leading-tight ${large ? "text-lg" : "text-sm"}`}>
-          {issue.title}
-        </div>
+        <div className={`text-white font-bold leading-tight ${large ? "text-lg" : "text-sm"}`}>{issue.title}</div>
       </div>
       <div className="text-center w-full">
         <div className="h-px bg-amber-400/50 mb-1" />
-        <div className="text-amber-300 text-xs tracking-wide">
-          Vol. {issue.volume} · Issue {issue.issue}
-        </div>
+        <div className="text-amber-300 text-xs tracking-wide">Vol. {issue.volume} · Issue {issue.issue}</div>
       </div>
       {issue.is_digital_only && (
         <div className="absolute top-2 right-2">
@@ -72,7 +68,7 @@ export default function MagazineArchivePage() {
   }, []);
 
   const filteredIssues = useMemo(() => {
-    let issues = MOCK_MAGAZINE_ISSUES.slice(1); // exclude latest (shown as featured)
+    let issues = MOCK_MAGAZINE_ISSUES.slice(1);
     if (filterYear !== "all") {
       issues = issues.filter(m => new Date(m.published_date).getFullYear() === parseInt(filterYear));
     }
@@ -84,11 +80,9 @@ export default function MagazineArchivePage() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      {/* Header */}
       <div className="mb-8">
         <Link href="/dashboard" className="inline-flex items-center text-sm text-gray-400 hover:text-amber-400 mb-4 transition-colors">
-          <ArrowLeft className="w-4 h-4 mr-1" />
-          Back to Dashboard
+          <ArrowLeft className="w-4 h-4 mr-1" />Back to Dashboard
         </Link>
         <div className="flex items-center gap-3 mb-2">
           <div className="p-2 bg-amber-500/20 rounded-lg">
@@ -96,12 +90,11 @@ export default function MagazineArchivePage() {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-white">Magazine Archive</h1>
-            <p className="text-gray-400">Every issue of DeLorean World Magazine, from the latest to the archives.</p>
+            <p className="text-gray-400">Every issue of DeLorean World Magazine.</p>
           </div>
         </div>
       </div>
 
-      {/* Featured Latest Issue */}
       <div className="mb-10">
         <h2 className="text-lg font-semibold text-amber-400 uppercase tracking-wider mb-4">Latest Issue</h2>
         <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
@@ -112,24 +105,16 @@ export default function MagazineArchivePage() {
             <div className="p-6 flex flex-col justify-between flex-1">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30">
-                    Vol. {latestIssue.volume} · Issue {latestIssue.issue}
-                  </Badge>
-                  <Badge variant="outline" className="text-gray-400 border-gray-600">
-                    {new Date(latestIssue.published_date).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
-                  </Badge>
-                  <Badge variant="outline" className="text-gray-400 border-gray-600">
-                    {latestIssue.page_count} pages
-                  </Badge>
+                  <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30">Vol. {latestIssue.volume} · Issue {latestIssue.issue}</Badge>
+                  <Badge variant="outline" className="text-gray-400 border-gray-600">{new Date(latestIssue.published_date).toLocaleDateString("en-US", { month: "long", year: "numeric" })}</Badge>
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-3">{latestIssue.title}</h3>
                 <p className="text-gray-300 mb-4 leading-relaxed">{latestIssue.cover_story}</p>
                 <div className="space-y-1">
-                  <div className="text-sm font-semibold text-amber-400 mb-2">Highlights in this issue:</div>
+                  <div className="text-sm font-semibold text-amber-400 mb-2">Highlights:</div>
                   {latestIssue.highlights.map((h, i) => (
                     <div key={i} className="flex items-center gap-2 text-sm text-gray-300">
-                      <div className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
-                      {h}
+                      <div className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />{h}
                     </div>
                   ))}
                 </div>
@@ -137,8 +122,7 @@ export default function MagazineArchivePage() {
               <div className="mt-6">
                 <Link href={`/magazine/${latestIssue.id}`}>
                   <Button className="bg-amber-500 hover:bg-amber-400 text-black font-semibold">
-                    <BookOpen className="w-4 h-4 mr-2" />
-                    Read Latest Issue
+                    <BookOpen className="w-4 h-4 mr-2" />Read Latest Issue
                   </Button>
                 </Link>
               </div>
@@ -147,7 +131,6 @@ export default function MagazineArchivePage() {
         </div>
       </div>
 
-      {/* Controls */}
       <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between mb-6">
         <h2 className="text-lg font-semibold text-amber-400 uppercase tracking-wider">Archive</h2>
         <div className="flex gap-3">
@@ -157,15 +140,11 @@ export default function MagazineArchivePage() {
             </SelectTrigger>
             <SelectContent className="bg-gray-900 border-gray-700">
               <SelectItem value="all">All Years</SelectItem>
-              {years.map(y => (
-                <SelectItem key={y} value={String(y)}>{y}</SelectItem>
-              ))}
+              {years.map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
             </SelectContent>
           </Select>
           <Select value={sort} onValueChange={(v) => setSort(v as "newest" | "oldest")}>
-            <SelectTrigger className="w-40 bg-gray-900 border-gray-700 text-gray-200">
-              <SelectValue />
-            </SelectTrigger>
+            <SelectTrigger className="w-40 bg-gray-900 border-gray-700 text-gray-200"><SelectValue /></SelectTrigger>
             <SelectContent className="bg-gray-900 border-gray-700">
               <SelectItem value="newest">Newest First</SelectItem>
               <SelectItem value="oldest">Oldest First</SelectItem>
@@ -174,7 +153,6 @@ export default function MagazineArchivePage() {
         </div>
       </div>
 
-      {/* Issue Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {filteredIssues.map((issue) => (
           <Link key={issue.id} href={`/magazine/${issue.id}`}>
@@ -183,13 +161,9 @@ export default function MagazineArchivePage() {
               <CardContent className="p-3">
                 <div className="flex items-center gap-1 mb-1">
                   <Calendar className="w-3 h-3 text-gray-500" />
-                  <span className="text-xs text-gray-500">
-                    {new Date(issue.published_date).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
-                  </span>
+                  <span className="text-xs text-gray-500">{new Date(issue.published_date).toLocaleDateString("en-US", { month: "short", year: "numeric" })}</span>
                 </div>
-                <p className="text-xs text-gray-300 font-medium line-clamp-2 group-hover:text-amber-300 transition-colors">
-                  {issue.title}
-                </p>
+                <p className="text-xs text-gray-300 font-medium line-clamp-2 group-hover:text-amber-300 transition-colors">{issue.title}</p>
                 <div className="flex items-center gap-1 mt-2">
                   <FileText className="w-3 h-3 text-gray-600" />
                   <span className="text-xs text-gray-600">{issue.page_count} pp</span>
@@ -199,12 +173,6 @@ export default function MagazineArchivePage() {
           </Link>
         ))}
       </div>
-
-      {filteredIssues.length === 0 && (
-        <div className="text-center py-12 text-gray-500">
-          No issues found for the selected filter.
-        </div>
-      )}
     </div>
   );
 }
